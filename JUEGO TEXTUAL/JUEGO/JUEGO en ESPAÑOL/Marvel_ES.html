@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MARVEL: El Último Héroe</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+:root{--red:#e23636;--gold:#f0c040;--blue:#1a6fb5;--darker:#060608;--text:#c8d8e8;--dim:#556677;--green:#69ff47;--orange:#ff9f43;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--darker);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background-image:radial-gradient(ellipse at 20% 50%,rgba(226,54,54,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(26,111,181,.05) 0%,transparent 50%);}
+#gc{width:100%;max-width:900px;border:1px solid var(--red);box-shadow:0 0 40px rgba(226,54,54,.25),inset 0 0 40px rgba(0,0,0,.6);background:rgba(10,10,15,.97);}
+#hdr{background:var(--red);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);}
+#hdr .logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.5rem;color:#fff;letter-spacing:4px;text-shadow:2px 2px 0 #8b0000;}
+#hdr .sub{font-size:.68rem;color:rgba(255,255,255,.7);letter-spacing:2px;text-transform:uppercase;}
+#sb{display:flex;gap:20px;padding:7px 20px;background:rgba(226,54,54,.08);border-bottom:1px solid rgba(226,54,54,.25);font-size:.73rem;flex-wrap:wrap;}
+.st{color:var(--dim)}.st span{color:var(--gold);font-weight:700}.st.hp span{color:#4caf50}
+#main{display:flex;height:500px;}
+#out{flex:1;padding:18px;overflow-y:auto;border-right:1px solid rgba(226,54,54,.15);display:flex;flex-direction:column;gap:5px;scrollbar-width:thin;scrollbar-color:var(--red) transparent;}
+#out::-webkit-scrollbar{width:3px}#out::-webkit-scrollbar-thumb{background:var(--red)}
+.m{font-size:.83rem;line-height:1.65;}
+.m.sys{color:var(--gold)}.m.err{color:#ff6b6b;font-style:italic}.m.ok{color:var(--green)}.m.fight{color:var(--orange)}.m.desc{color:var(--text)}.m.echo{color:var(--dim)}.m.ascii{color:var(--red);white-space:pre;font-size:.58rem;line-height:1.15;}.m.ttl{color:var(--gold);font-family:'Orbitron',sans-serif;font-size:.88rem;border-bottom:1px solid rgba(240,192,64,.25);padding-bottom:3px;margin-bottom:3px;}.m.sep{color:rgba(226,54,54,.3);}
+#side{width:210px;padding:14px;font-size:.73rem;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:rgba(6,6,12,.6);}
+.sl{color:var(--red);font-family:'Orbitron',sans-serif;font-size:.62rem;letter-spacing:2px;border-bottom:1px solid rgba(226,54,54,.25);padding-bottom:3px;margin-bottom:5px;}
+.ii{color:var(--text);padding:2px 0;display:flex;align-items:center;gap:5px;font-size:.7rem;}
+.ii::before{content:'▸';color:var(--red);font-size:.58rem;}.ii.weapon::before{content:'⚔';}.ii.armor::before{content:'🛡';}.ii.potion::before{content:'⚗';}.ii.key::before{content:'★';color:var(--gold);}
+.ln{color:var(--blue);font-size:.77rem;font-weight:700;}.lz{color:var(--dim);font-size:.67rem;}.le{color:var(--dim);font-size:.65rem;margin-top:3px;}.le span{color:#aaa;}
+#ia{padding:11px 20px;border-top:1px solid rgba(226,54,54,.25);display:flex;align-items:center;gap:10px;}
+.pr{color:var(--red);font-size:.9rem;}
+#ci{flex:1;background:transparent;border:none;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.84rem;outline:none;caret-color:var(--red);}
+#ci::placeholder{color:var(--dim);}
+#hb{padding:5px 20px;background:rgba(0,0,0,.4);font-size:.62rem;color:var(--dim);display:flex;gap:14px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.04);}
+#hb b{color:var(--red);}#hb span{color:#666;}
+</style>
+</head>
+<body>
+<div id="gc">
+  <div id="hdr">
+    <div><div class="logo">MARVEL</div><div class="sub">El Último Héroe — Aventura Textual</div></div>
+    <div style="text-align:right;font-size:.65rem;color:rgba(255,255,255,.5);">HTML5 · ESPAÑOL · v2.0</div>
+  </div>
+  <div id="sb">
+    <div class="st hp">HP: <span id="s-hp">100/100</span></div>
+    <div class="st">PERSONAJE: <span>Nick Fury</span></div>
+    <div class="st">NIVEL: <span>Director S.H.I.E.L.D.</span></div>
+    <div class="st">FASE: <span id="s-phase">Activa</span></div>
+  </div>
+  <div id="main">
+    <div id="out"></div>
+    <div id="side">
+      <div>
+        <div class="sl">▶ UBICACIÓN</div>
+        <div class="ln" id="s-loc">—</div>
+        <div class="lz" id="s-zone">—</div>
+        <div class="le" id="s-exits">Salidas: <span>—</span></div>
+      </div>
+      <div>
+        <div class="sl">▶ INVENTARIO</div>
+        <div id="s-inv"></div>
+      </div>
+      <div>
+        <div class="sl">▶ OBJETIVOS</div>
+        <div id="s-obj" style="font-size:.66rem;color:#777;line-height:1.7;white-space:pre;"></div>
+      </div>
+    </div>
+  </div>
+  <div id="ia">
+    <span class="pr">FURY&gt;</span>
+    <input id="ci" type="text" placeholder="escribe una orden..." autocomplete="off" autofocus>
+  </div>
+  <div id="hb">
+    <div><b>ir</b> <span>[norte/sur/este/oeste]</span></div>
+    <div><b>mirar</b></div><div><b>explorar</b></div>
+    <div><b>coger</b> <span>[objeto]</span></div>
+    <div><b>usar</b> <span>[objeto]</span></div>
+    <div><b>atacar</b></div><div><b>inventario</b></div><div><b>ayuda</b></div>
+  </div>
+</div>
+<script>
+// ── Respuestas aleatorias ──────────────────────────────────────────────────
+const RAND = [
+  "FRIDAY no entiende lo que dices. Quizás deberías llamar al Doctor Strange.",
+  "Tony Stark diría: 'Genial, he construido una IA y no entiende ni el castellano.' Inténtalo de nuevo.",
+  "ERROR 616: Orden no reconocida. Se ha notificado a Charles Xavier... pero él ya lo sabía.",
+  "¿Hulk GOLPEAR teclado? Porque ese comando no tiene ningún sentido.",
+  "Loki dice: 'No sé de qué hablas, pero me parece un buen plan para sembrar el caos.'",
+  "Wanda ha reescrito la realidad y ahora tampoco entiende lo que quieres decir.",
+  "S.H.I.E.L.D. registra orden desconocida. Archivo enviado a Nick Fury... que eres tú. Espabila.",
+  "Peter Parker diría: 'Un gran poder conlleva una gran responsabilidad'... tú tienes 0 de los dos.",
+  "Thor dice: '¡No soy experto en vuestras palabras mortales, pero ODÍN tampoco lo entendería!'",
+];
+
+// ── Arte ASCII ─────────────────────────────────────────────────────────────
+const ASCII = {
+  avengers:`
+   ▄████████▄
+  ████▀▀▀▀████
+  ████  A  ████
+  ████     ████
+  ▀████▄▄████▀
+    ▀▀████▀▀
+  AVENGERS TOWER`,
+  shield:`
+  ╔═══════════╗
+  ║ S.H.I.E.L.D ║
+  ║   ◉─────◉  ║
+  ║   │  ▲  │  ║
+  ║   │ ═╪═ │  ║
+  ║   ◉─────◉  ║
+  ╚═══════════╝`,
+  wakanda:`
+    /\\  /\\  /\\
+   /WW\\/ K\\/ A\\
+  /  WAKANDA  \\
+  \\___________/
+   ║ VIBRANIUM ║
+   ╚═══╦════╝
+       ║`,
+  stark:`
+   ┌─────────────┐
+   │  ♥  ARC    │
+   │  REACTOR   │
+   │    ◎◎◎     │
+   │   ◎ ◎ ◎   │
+   │    ◎◎◎     │
+   └─────────────┘`,
+  thanos:`
+    ║▌║▌║║╠╬╬
+   ╔╩╦╩╦╩╦╩╗
+   ║T H A N O S║
+   ╠══◈══◈══╣
+   ║  ∞∞∞∞  ║
+   ╚════════╝
+  EL TITAN LOCO`,
+  strange:`
+  ╔══════════════╗
+  ║  SANCTA      ║
+  ║  SANCTORUM   ║
+  ║   ◎  ⊗  ◎   ║
+  ║  OJO AGAMOTTO║
+  ╚══════════════╝`,
+};
+
+// ── Mundo ──────────────────────────────────────────────────────────────────
+const WORLD = {
+  torre: {
+    nombre:"Torre Vengadores", zona_principal:"lobby",
+    salidas_entre_loc:{ sur:"shield" },
+    zonas:{
+      lobby:{ nombre:"Vestíbulo Principal", ascii:"avengers",
+        desc:"El majestuoso vestíbulo de la Torre Vengadores. Pantallas holográficas muestran las últimas amenazas mundiales. La recepcionista es un robot STARK.",
+        salidas:{ norte:"reuniones", este:"lab" }, items:[] },
+      reuniones:{ nombre:"Sala de Reuniones",
+        desc:"Una enorme mesa circular con sillas para cada Vengador. Ves notas de misiones pasadas y el rastreador del Capitán sobre la mesa.",
+        salidas:{ sur:"lobby", este:"lab" }, items:["rastreador"] },
+      lab:{ nombre:"Laboratorio de Tony Stark", ascii:"stark",
+        desc:"Docenas de piezas de armadura Iron Man cubren las paredes. FRIDAY te observa. Huele a aceite de motor y cafeína.",
+        salidas:{ oeste:"reuniones", sur:"lobby" }, items:["armadura"] },
+    }
+  },
+  shield:{ nombre:"Sede de S.H.I.E.L.D.", zona_principal:"entrada",
+    salidas_entre_loc:{ norte:"torre", sur:"wakanda", este:"sancta" },
+    zonas:{
+      entrada:{ nombre:"Entrada de Seguridad", ascii:"shield",
+        desc:"Escáneres biométricos por todas partes. Agentes con gafas de sol te miran con sospecha. Incluso a ti, Nick Fury.",
+        salidas:{ norte:"control", este:"armeria" }, items:[] },
+      control:{ nombre:"Sala de Control",
+        desc:"Múltiples pantallas muestran amenazas en tiempo real. Coulson gestiona el caos con una taza de café y una sonrisa estoica.",
+        salidas:{ sur:"entrada", este:"armeria" }, items:["intel"] },
+      armeria:{ nombre:"Armería Clasificada",
+        desc:"Armas experimentales por todas partes. Ves el RIFLE DE PLASMA de S.H.I.E.L.D. y una botella con la etiqueta 'Poción de Curación — Dr. Strange'.",
+        salidas:{ sur:"control", oeste:"entrada" }, items:["rifle","pocion"] },
+    }
+  },
+  wakanda:{ nombre:"Wakanda", zona_principal:"llanuras",
+    salidas_entre_loc:{ norte:"shield", este:"sancta" },
+    zonas:{
+      llanuras:{ nombre:"Llanuras de Wakanda", ascii:"wakanda",
+        desc:"Exuberante vegetación rodea la nación oculta. Rinocerontes de vibranium pastan a lo lejos. T'Challa te observa desde las sombras.",
+        salidas:{ norte:"trono", este:"minas" }, items:[] },
+      trono:{ nombre:"Sala del Trono",
+        desc:"El Rey T'Challa te recibe formalmente. Las paredes están decoradas con las victorias históricas de la Pantera Negra.",
+        salidas:{ sur:"llanuras", este:"minas" }, items:["garra"] },
+      minas:{ nombre:"Minas de Vibranium",
+        desc:"Metal luminoso de color púrpura invade las paredes. Sientes el zumbido constante de la energía vibranium resonando en tu pecho.",
+        salidas:{ oeste:"trono", norte:"llanuras" }, items:["lingote"] },
+    }
+  },
+  sancta:{ nombre:"Sancta Sanctorum", zona_principal:"calle",
+    salidas_entre_loc:{ oeste:"shield", sur:"wakanda", norte:"campo" },
+    zonas:{
+      calle:{ nombre:"Calle Bleecker", ascii:"strange",
+        desc:"Un edificio victoriano en el Greenwich Village de NYC. Una ventana circular con el símbolo del Ojo de Agamotto brilla misteriosamente.",
+        salidas:{ norte:"biblioteca", este:"portales" }, items:[] },
+      biblioteca:{ nombre:"Biblioteca Mágica",
+        desc:"Miles de libros de magia flotan en el aire. Wong te ofrece un té y una mirada de desaprobación simultáneamente. Es un don.",
+        salidas:{ sur:"calle", este:"portales" }, items:["libro"] },
+      portales:{ nombre:"Sala de los Portales",
+        desc:"El Doctor Strange medita aquí. Portales a dimensiones desconocidas se abren y cierran al azar. Sientes mareo y maravilla a partes iguales.",
+        salidas:{ oeste:"biblioteca", sur:"calle" }, items:["guantelete_roto"] },
+    }
+  },
+  campo:{ nombre:"Campo de Batalla Final", zona_principal:"puerta",
+    salidas_entre_loc:{ sur:"sancta" },
+    zonas:{
+      puerta:{ nombre:"Puerta del Apocalipsis", ascii:"thanos",
+        desc:"El cielo es púrpura y rojo. Cráteres gigantes marcan la tierra. El olor a ozono te dice que aquí ha habido magia poderosa hace muy poco.",
+        salidas:{ norte:"centro", este:"refugio" }, items:[] },
+      centro:{ nombre:"Centro del Campo de Batalla", enemigo:true,
+        desc:"THANOS te espera aquí. Con el Guantelete del Infinito (parcialmente reparado) en el puño. Te mira con indiferencia cósmica absoluta.",
+        salidas:{ sur:"puerta", este:"refugio" }, items:[] },
+      refugio:{ nombre:"Refugio de los Supervivientes",
+        desc:"Restos de armaduras de otros héroes caídos rodean este lugar sagrado. Una nota de Thor reza: 'Deberías ir a por el escudo, amigo.'",
+        salidas:{ oeste:"centro", sur:"puerta" }, items:["escudo"] },
+    }
+  }
+};
+
+// ── Objetos ────────────────────────────────────────────────────────────────
+const ITEMS = {
+  rastreador:{ nombre:"Rastreador del Capitán América", tipo:"key",
+    desc:"Dispositivo que puede localizar el Escudo del Capitán. Clave para la misión." },
+  armadura:{ nombre:"Armadura Iron Man Mark L", tipo:"armor",
+    desc:"Protección nanotecnológica de Tony Stark. +40 HP máximo al equiparla." },
+  intel:{ nombre:"Inteligencia sobre Thanos", tipo:"key",
+    desc:"Información clasificada de S.H.I.E.L.D. sobre las debilidades del Titán Loco." },
+  rifle:{ nombre:"Rifle de Plasma S.H.I.E.L.D.", tipo:"weapon",
+    desc:"Arma potente de largo alcance. Daño: 35. Muy efectivo contra objetivos blindados." },
+  pocion:{ nombre:"Poción de Curación (Doctor Strange)", tipo:"potion",
+    desc:"Restaura 50 HP. Preparada por Wong en el Kamar-Taj con ingredientes de otras dimensiones." },
+  garra:{ nombre:"Garra de Vibranium (T'Challa)", tipo:"weapon",
+    desc:"Las garras de la Pantera Negra. Daño: 25. Forjadas en vibranium puro de Wakanda." },
+  lingote:{ nombre:"Lingote de Vibranium", tipo:"key",
+    desc:"Metal precioso de Wakanda. El material más resistente conocido en la Tierra." },
+  libro:{ nombre:"Libro de Hechizos de Doctor Strange", tipo:"key",
+    desc:"Contiene el hechizo Crimson Bands of Cyttorak. Inmoviliza enemigos físicamente." },
+  guantelete_roto:{ nombre:"Guantelete Roto del Infinito", tipo:"key",
+    desc:"Versión dañada del Guantelete. Ya no puede usarse, pero cuenta la historia de Thanos." },
+  escudo:{ nombre:"Escudo del Capitán América", tipo:"weapon", clave:true,
+    desc:"El arma LEGENDARIA hecha de vibranium puro. Daño: 60. NECESARIO para vencer a Thanos." },
+};
+
+// ── Estado ─────────────────────────────────────────────────────────────────
+const G = {
+  loc:"shield", zona:"entrada",
+  inv:["garra"],
+  hp:100, maxHp:100,
+  muerto:false, ganado:false,
+  suelo:{},
+};
+
+// Inicializar objetos en el suelo
+Object.entries(WORLD).forEach(([lid,l])=>
+  Object.entries(l.zonas).forEach(([zid,z])=>{
+    G.suelo[`${lid}_${zid}`]=[...(z.items||[])];
+  })
+);
+
+// ── Helpers de UI ──────────────────────────────────────────────────────────
+const outEl = document.getElementById("out");
+function pr(txt, cls="desc"){
+  const d=document.createElement("div");
+  d.className=`m ${cls}`; d.innerHTML=txt;
+  outEl.appendChild(d); outEl.scrollTop=outEl.scrollHeight;
+}
+function sep(){ pr("─".repeat(52),"sep"); }
+function titulo(t){ pr(t,"ttl"); }
+
+function actualizarPanel(){
+  const l=WORLD[G.loc], z=l.zonas[G.zona];
+  document.getElementById("s-loc").textContent=l.nombre;
+  document.getElementById("s-zone").textContent=`↳ ${z.nombre}`;
+  document.getElementById("s-hp").textContent=`${G.hp}/${G.maxHp}`;
+  document.getElementById("s-phase").textContent=G.ganado?"¡VICTORIA!":G.muerto?"GAME OVER":"Activa";
+
+  // Salidas
+  const sal={...z.salidas};
+  if(G.zona===l.zona_principal && l.salidas_entre_loc)
+    Object.assign(sal, l.salidas_entre_loc);
+  document.getElementById("s-exits").innerHTML=
+    `Salidas: <span>${Object.keys(sal).join(", ")||"ninguna"}</span>`;
+
+  // Inventario
+  const invEl=document.getElementById("s-inv");
+  invEl.innerHTML="";
+  if(!G.inv.length){
+    invEl.innerHTML='<div style="color:var(--dim);font-size:.68rem;">(vacío)</div>';
+  } else {
+    G.inv.forEach(id=>{
+      const it=ITEMS[id];
+      const d=document.createElement("div");
+      d.className=`ii ${it.tipo}`;
+      d.textContent=it.nombre; invEl.appendChild(d);
+    });
+  }
+
+  // Objetivos
+  const o1 = G.inv.includes("escudo") ? "☑ Escudo conseguido" : "☐ Consigue el Escudo del Cap.";
+  const o2 = G.muerto ? "✗ Derrotado" : G.ganado ? "☑ Thanos derrotado" : "☐ Derrota a Thanos";
+  document.getElementById("s-obj").textContent = `${o1}\n${o2}`;
+}
+
+// ── Describir zona ─────────────────────────────────────────────────────────
+function describir(){
+  const l=WORLD[G.loc], z=l.zonas[G.zona];
+  sep();
+  titulo(`📍 ${l.nombre} — ${z.nombre}`);
+  pr(z.desc);
+
+  // ASCII (solo si tiene)
+  if(z.ascii && ASCII[z.ascii]){ pr(ASCII[z.ascii],"ascii"); }
+
+  // Objetos en el suelo
+  const k=`${G.loc}_${G.zona}`;
+  const s=G.suelo[k]||[];
+  if(s.length)
+    pr(`Ves aquí: <span style="color:var(--gold)">${s.map(i=>ITEMS[i].nombre).join(", ")}</span>`);
+
+  // Enemigo
+  if(z.enemigo && !G.ganado)
+    pr(`<span style="color:#ff4444">⚠ THANOS TE BLOQUEA EL PASO. ¡Necesitas el Escudo del Capitán para vencerle!</span>`,"fight");
+
+  // Salidas
+  const sal={...z.salidas};
+  if(G.zona===l.zona_principal && l.salidas_entre_loc) Object.assign(sal,l.salidas_entre_loc);
+  const sx=Object.keys(sal).map(d=>`<span style="color:var(--gold)">${d}</span>`).join(", ");
+  pr(`Salidas: ${sx||"<span style='color:var(--dim)'>ninguna</span>"}`);
+}
+
+// ── Comandos ───────────────────────────────────────────────────────────────
+function cmdIr(dir){
+  if(!dir){ pr("¿Adónde quieres ir? Indica una dirección.","err"); return; }
+  const l=WORLD[G.loc], z=l.zonas[G.zona];
+  // Salida de zona interna
+  if(z.salidas[dir]){
+    G.zona=z.salidas[dir]; describir(); return;
+  }
+  // Salida entre localizaciones (solo desde zona principal)
+  if(G.zona===l.zona_principal && l.salidas_entre_loc && l.salidas_entre_loc[dir]){
+    const dest=l.salidas_entre_loc[dir];
+    G.loc=dest; G.zona=WORLD[dest].zona_principal;
+    pr(`Viajas hacia <span style="color:var(--blue)">${WORLD[dest].nombre}</span>...`,"sys");
+    describir(); return;
+  }
+  pr(`No puedes ir al ${dir} desde aquí. Ni Scarlet Witch podría abrir un portal en esa dirección.`,"err");
+}
+
+function cmdCoger(q){
+  if(!q){ pr("¿Qué quieres coger?","err"); return; }
+  const k=`${G.loc}_${G.zona}`;
+  const s=G.suelo[k]||[];
+  const id=s.find(i=>ITEMS[i].nombre.toLowerCase().includes(q)||i.includes(q.replace(/ /g,"_")));
+  if(!id){ pr(`No encuentras "${q}" aquí. Prueba a <b>explorar</b> la zona.`,"err"); return; }
+  G.suelo[k]=s.filter(i=>i!==id);
+  G.inv.push(id);
+  const it=ITEMS[id];
+  if(it.tipo==="armor"){
+    G.maxHp=Math.min(160,G.maxHp+40);
+    G.hp=Math.min(G.maxHp,G.hp+40);
+    pr(`Has cogido: <span style="color:var(--gold)">${it.nombre}</span>. ¡La armadura te protege! +40 HP máx.`,"ok");
+  } else {
+    pr(`Has cogido: <span style="color:var(--gold)">${it.nombre}</span>. <span style="color:var(--dim)">${it.desc}</span>`,"ok");
+  }
+  if(id==="escudo") pr(`⚡ <span style="color:var(--gold)">¡EL ESCUDO DEL CAPITÁN AMÉRICA! ¡Ahora puedes enfrentarte a Thanos!</span>`,"sys");
+}
+
+function cmdUsar(q){
+  if(!q){ pr("¿Qué objeto quieres usar?","err"); return; }
+  const id=G.inv.find(i=>ITEMS[i].nombre.toLowerCase().includes(q)||i.includes(q));
+  if(!id){ pr(`No tienes "${q}" en el inventario.`,"err"); return; }
+  const it=ITEMS[id];
+  if(it.tipo==="potion"){
+    const h=50; G.hp=Math.min(G.maxHp,G.hp+h);
+    G.inv=G.inv.filter(i=>i!==id);
+    pr(`Bebes la <span style="color:var(--gold)">${it.nombre}</span>. ¡Recuperas ${h} HP! HP actual: ${G.hp}/${G.maxHp}`,"ok");
+  } else if(it.tipo==="weapon"){
+    pr(`Blandeas <span style="color:var(--gold)">${it.nombre}</span> en el aire. Impresionante, pero no hay enemigo aquí.`);
+  } else {
+    pr(`Examinas <span style="color:var(--gold)">${it.nombre}</span>: ${it.desc}`);
+  }
+}
+
+function cmdExaminar(q){
+  if(!q){ pr("¿Qué quieres examinar?","err"); return; }
+  const id=G.inv.find(i=>ITEMS[i].nombre.toLowerCase().includes(q)||i.includes(q));
+  if(id){ pr(`<span style="color:var(--gold)">${ITEMS[id].nombre}</span>: ${ITEMS[id].desc}`); }
+  else { pr(`No tienes "${q}" en el inventario.`,"err"); }
+}
+
+function cmdExplorar(){
+  const k=`${G.loc}_${G.zona}`;
+  const s=G.suelo[k]||[];
+  const z=WORLD[G.loc].zonas[G.zona];
+  pr("Exploras la zona detenidamente...","sys");
+  if(z.ascii && ASCII[z.ascii]) pr(ASCII[z.ascii],"ascii");
+  if(s.length) pr(`Encuentras: <span style="color:var(--gold)">${s.map(i=>ITEMS[i].nombre).join(", ")}</span>`,"ok");
+  else pr("No hay nada más que recoger aquí.");
+  if(z.enemigo && !G.ganado) pr("THANOS te observa con el Guantelete. Su poder es inconmensurable.","fight");
+}
+
+function cmdInventario(){
+  if(!G.inv.length){ pr("El inventario está vacío. Eres Nick Fury, no Ant-Man.","sys"); return; }
+  titulo("🎒 INVENTARIO");
+  G.inv.forEach(id=>{
+    const it=ITEMS[id];
+    const ico=it.tipo==="weapon"?"⚔":it.tipo==="armor"?"🛡":it.tipo==="potion"?"⚗":"★";
+    pr(`${ico} <span style="color:var(--gold)">${it.nombre}</span> — ${it.desc}`);
+  });
+}
+
+function cmdAtacar(){
+  const z=WORLD[G.loc].zonas[G.zona];
+  if(!z.enemigo){ pr("No hay enemigo aquí. Tranquílate, no eres el Punisher.","err"); return; }
+  if(G.ganado){ pr("Thanos ya ha sido derrotado. El universo está a salvo.","sys"); return; }
+  if(G.muerto){ pr("Has sido derrotado. Recarga la página para intentarlo de nuevo.","err"); return; }
+
+  if(!G.inv.includes("escudo")){
+    pr("¡Intentas atacar a Thanos pero tus golpes no le hacen absolutamente nada!","fight");
+    pr(`Thanos ríe: <em style="color:#ff4444">"¿En serio? ¿Sin el Escudo del Capitán? Ve a buscarlo primero."</em>`,"fight");
+    const d=20; G.hp=Math.max(0,G.hp-d);
+    pr(`¡Thanos te golpea con el Guantelete! Pierdes ${d} HP. HP restante: <span style="color:#ff6666">${G.hp}/${G.maxHp}</span>`,"fight");
+    if(G.hp<=0){
+      pr("","sep");
+      pr("Has sido derrotado por Thanos. El universo queda condenado...","err");
+      pr("Recarga la página para intentarlo de nuevo.","err");
+      G.muerto=true;
+    }
+    return;
+  }
+
+  // ¡Victoria!
+  titulo("⚡ COMBATE FINAL: Nick Fury vs Thanos");
+  pr("¡Lanzas el <span style='color:var(--gold)'>ESCUDO DEL CAPITÁN AMÉRICA</span> con toda tu fuerza!","fight");
+  pr("¡El escudo de vibranium destruye el Guantelete del Infinito parcialmente reparado!","fight");
+  if(G.inv.includes("libro")){
+    pr(`Recuerdas el hechizo del Libro de Strange: <em>"¡Crimson Bands of Cyttorak!"</em>","fight`);
+    pr("¡Las bandas carmesíes inmovilizan a Thanos completamente!","fight");
+  }
+  if(G.inv.includes("rifle")){
+    pr("¡Disparas el Rifle de Plasma de S.H.I.E.L.D. mientras Thanos está inmovilizado!","fight");
+  }
+  pr("","desc");
+  pr(`🎊 <span style="color:var(--green)">¡THANOS HA SIDO DERROTADO! El Titán Loco cae de rodillas.</span>`,"ok");
+  pr(`Thanos: <em style="color:#aaa">"Respeto... Quizás el universo... sí merecía ser salvado..."</em>`);
+  pr("¡El Guantelete del Infinito se deshace en polvo cósmico. La realidad está a salvo!","ok");
+  sep();
+  pr("═".repeat(38),"sep");
+  titulo("         ★  VICTORIA TOTAL  ★         ");
+  pr("   ¡Nick Fury ha salvado el universo!   ","sys");
+  pr("═".repeat(38),"sep");
+  pr("Has completado: <b>MARVEL: El Último Héroe</b>","sys");
+  G.ganado=true;
+  document.getElementById("s-phase").textContent="¡VICTORIA!";
+}
+
+function cmdAyuda(){
+  titulo("📋 ÓRDENES DISPONIBLES");
+  const cmds=[
+    ["ir [norte/sur/este/oeste]","Moverte entre zonas y localizaciones"],
+    ["mirar","Ver descripción de la zona actual"],
+    ["explorar","Buscar objetos ocultos en la zona"],
+    ["coger [objeto]","Recoger un objeto del suelo"],
+    ["usar [objeto]","Usar un objeto del inventario"],
+    ["examinar [objeto]","Ver detalles de un objeto"],
+    ["atacar","Atacar al enemigo presente"],
+    ["inventario","Mostrar el inventario completo"],
+    ["ayuda","Mostrar este menú"],
+  ];
+  cmds.forEach(([c,d])=>pr(`<span style="color:var(--gold)">● ${c}</span> <span style="color:var(--dim)">→ ${d}</span>`));
+  pr(`<span style="color:var(--gold)">MISIÓN: Consigue el Escudo del Capitán y derrota a Thanos.</span>`,"sys");
+}
+
+// ── Parsear y ejecutar orden ───────────────────────────────────────────────
+function ejecutar(raw){
+  if(G.muerto && !raw.includes("ayuda")){
+    pr("Has sido derrotado. Recarga la página para intentarlo de nuevo.","err"); return;
+  }
+  const cmd=raw.trim().toLowerCase();
+  if(!cmd) return;
+  pr(`> ${raw}`,"echo");
+
+  const w=cmd.split(/\s+/);
+  const v=w[0], resto=w.slice(1).join(" ");
+
+  const DIRS=["norte","sur","este","oeste","n","s","e","o"];
+  const dirMap={n:"norte",s:"sur",e:"este",o:"oeste"};
+
+  if(["mirar","l","look","ver","observar"].includes(cmd)){
+    describir();
+  } else if(["inventario","inv","i","mochila","bolsa"].includes(cmd)){
+    cmdInventario();
+  } else if(["ayuda","help","h","?","comandos"].includes(cmd)){
+    cmdAyuda();
+  } else if(v==="ir"||v==="ve"||v==="vete"||DIRS.includes(v)){
+    let d=DIRS.includes(v)?v:resto;
+    d=dirMap[d]||d;
+    cmdIr(d);
+  } else if(["coger","agarrar","recoger","tomar","coge","agarra"].includes(v)){
+    cmdCoger(resto);
+  } else if(["usar","utilizar","beber","usa"].includes(v)){
+    cmdUsar(resto);
+  } else if(["examinar","inspeccionar","examina","leer"].includes(v)){
+    cmdExaminar(resto);
+  } else if(["explorar","buscar","registrar","investigar","explora"].includes(v)){
+    cmdExplorar();
+  } else if(["atacar","luchar","combatir","pelear","ataca","lucha"].includes(v)){
+    cmdAtacar();
+  } else {
+    pr(RAND[Math.floor(Math.random()*RAND.length)],"err");
+  }
+  actualizarPanel();
+}
+
+// ── Input ──────────────────────────────────────────────────────────────────
+document.getElementById("ci").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    const v=e.target.value.trim();
+    e.target.value="";
+    if(v) ejecutar(v);
+  }
+});
+
+// ── Inicio ─────────────────────────────────────────────────────────────────
+function init(){
+  titulo("⚡ MARVEL: EL ÚLTIMO HÉROE ⚡");
+  pr("Año 2025. Thanos ha regresado con un Guantelete del Infinito parcialmente reparado.","sys");
+  pr(`Eres <span style="color:var(--gold)">NICK FURY</span>, director de S.H.I.E.L.D. El único que puede detenerle.`,"sys");
+  pr("Tu misión: conseguir el <b>Escudo del Capitán América</b> y derrotar a Thanos en el Campo de Batalla Final.","sys");
+  sep();
+  pr("Escribe <span style='color:var(--gold)'>ayuda</span> para ver todos los comandos disponibles.");
+  describir();
+  actualizarPanel();
+}
+init();
+</script>
+</body>
+</html>
